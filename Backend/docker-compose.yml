@@ -16,7 +16,7 @@ services:
   app:
     depends_on:
       - postgresdb
-    build: /foodwastereductionplatform
+    build: /Backend
     restart: on-failure
     env_file: ./.env
     ports:

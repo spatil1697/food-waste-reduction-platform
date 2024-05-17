@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    parameters {
-        base64File description: 'Uploaded file', name: 'FILE'
-    }
-
     tools {
         jdk 'jdk17'
         maven 'maven3'
@@ -12,7 +8,6 @@ pipeline {
 
 
     stages {
-
         //Building and creating JAR
         stage('Build') {
             steps {
@@ -25,10 +20,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Run Docker Compose with environment variables from the file
-                    withFileParameter('FILE') {
-                        // Pass environment variables from the file to Docker Compose
-                        bat "type $FILE > .env && docker-compose --env-file .env build"
+                    // Access the FILE credential and write its content to .env file
+                    withCredentials([file(credentialsId: 'FILE', variable: 'envFile')]) {
+                        bat "type %envFile% > .env"
+                        bat 'docker-compose --env-file .env build'
                         bat 'docker tag foodwastereductionplatform-backend spatil1609/foodwastereductionplatform-app:latest'
                     }
                 }

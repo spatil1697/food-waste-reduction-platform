@@ -21,5 +21,6 @@ public class FoodResponseDTO {
     private int quantity;
     private String pickupLocation;
     private String status;
+    private String imageBase64; // Base64-encoded image data
     private Timestamp creationDate;
 }

@@ -6,6 +6,8 @@ import com.webapp.foodwastereductionplatform.repositories.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 import org.springframework.boot.test.context.*;
+import org.springframework.mock.web.*;
+import org.springframework.web.multipart.*;
 
 import java.sql.*;
 import java.time.*;
@@ -42,9 +44,12 @@ class FoodServiceTest {
 
         // Mocking repository response
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        // Mocking image file
+        byte[] imageBytes = "test_image_data".getBytes();
+        MultipartFile image = new MockMultipartFile("image", "test_image.jpg", "image/jpeg", imageBytes);
 
         // Invoke the method under test
-        foodService.createFoodListing(foodRequestDTO, userId);
+        foodService.createFoodListing(foodRequestDTO, userId, image);
 
         // Verify repository method call
         Mockito.verify(foodRepository, Mockito.times(1)).save(Mockito.any(Food.class));
@@ -74,8 +79,11 @@ class FoodServiceTest {
         Mockito.when(foodRepository.findById(foodId)).thenReturn(Optional.of(food));
         Mockito.when(foodRepository.save(Mockito.any(Food.class))).thenReturn(food);
 
+        byte[] imageBytes = "test_image_data".getBytes();
+        MultipartFile image = new MockMultipartFile("image", "test_image.jpg", "image/jpeg", imageBytes);
+
         // Invoke the method under test
-        foodService.updateFoodListing(userId, foodId, foodRequestDTO);
+        foodService.updateFoodListing(userId, foodId, foodRequestDTO, image);
 
         // Verify repository method call
         Mockito.verify(foodRepository, Mockito.times(1)).save(Mockito.any(Food.class));

@@ -21,26 +21,11 @@ public class UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private UserServiceImplementation customUserDetails;
-
-
     public AuthUserRequestDTO createUser(UserSignUpRequestDTO userSignUpRequest) {
-
-        if (userSignUpRequest.getEmail() == null || userSignUpRequest.getPassword() == null) {
-            throw new IllegalArgumentException("Missing input data");
-        }
-
         String userType = userSignUpRequest.getUserType().toLowerCase();
-        if (!userType.equals("individual") && !userType.equals("organization")) {
-            throw new IllegalArgumentException("User type must be Individual or Organization");
-        }
-
-        if (!isValidEmail(userSignUpRequest.getEmail())) {
-            throw new IllegalArgumentException("Invalid email format");
-        }
-
-        if (!isValidPassword(userSignUpRequest.getPassword())) {
-            throw new IllegalArgumentException("Password must have at least one number, one capital letter, and one special character");
-        }
+        validateUserType(userType);
+        validateEmailAndPassword(userSignUpRequest.getEmail(), userSignUpRequest.getPassword());
+        isEmailUnique(userSignUpRequest.getEmail());
 
         String email = userSignUpRequest.getEmail();
         String password = userSignUpRequest.getPassword();
@@ -48,11 +33,6 @@ public class UserService {
         String lastName = userSignUpRequest.getLastName();
         String contactNumber = userSignUpRequest.getContactNumber();
         Address address = userSignUpRequest.getAddress();
-        User isEmailExist = userRepository.findByEmail(email);
-
-        if (isEmailExist != null) {
-            throw new IllegalArgumentException("Email is already used with another account. Please use a different email address.");
-        }
 
         User createdUser = User.builder()
                 .email(email)
@@ -74,7 +54,6 @@ public class UserService {
                 .status(true)
                 .build();
     }
-
     public AuthUserResponseDTO login(UserLoginRequestDTO loginRequest) {
 
         String email = loginRequest.getEmail();
@@ -97,16 +76,11 @@ public class UserService {
                 .email(user.getEmail())
                 .build();
     }
-
     public AuthUserResponseDTO updateUserData(UserSignUpUpdateRequestDTO userSignUpRequestDTO, Integer userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
-
+        User user =getUserById(userId);
         String userType = userSignUpRequestDTO.getUserType().toLowerCase();
-        if (!userType.equals("individual") && !userType.equals("organization")) {
-            throw new IllegalArgumentException("User type must be Individual or Organization");
-        }
+        validateUserType(userType);
 
         user.setFirstName(userSignUpRequestDTO.getFirstName());
         user.setLastName(userSignUpRequestDTO.getLastName());
@@ -126,14 +100,28 @@ public class UserService {
                 .email(updatedUser.getEmail())
                 .build();
     }
-
     public void deleteUserById(Integer userId) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+        User user =getUserById(userId);
         userRepository.delete(user);
     }
+    private void validateEmailAndPassword(String email, String password) {
+        if (email == null || password == null) {
+            throw new IllegalArgumentException("Email and password cannot be null");
+        }
 
+        if (!isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
+        if (!isValidPassword(password)) {
+            throw new IllegalArgumentException("Password must have at least one number, one capital letter, and one special character");
+        }
+    }
+    private void isEmailUnique(String email) {
+        if (userRepository.findByEmail(email) != null) {
+            throw new IllegalArgumentException("Email is already used with another account. Please use a different email address.");
+        }
+    }
     private Authentication authenticate(String email, String password) {
 
         UserDetails userDetails = customUserDetails.loadUserByUsername(email);
@@ -145,12 +133,19 @@ public class UserService {
         }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
-
+    private User getUserById(Integer userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
+    }
+    private void validateUserType(String userType) {
+        if (!userType.equals("individual") && !userType.equals("organization")) {
+            throw new IllegalArgumentException("User type must be Individual or Organization");
+        }
+    }
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
-
     private boolean isValidPassword(String password) {
         String passwordRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+\\\\|[{]};:'\",<.>/?]).{8,}$";
         return password.matches(passwordRegex);

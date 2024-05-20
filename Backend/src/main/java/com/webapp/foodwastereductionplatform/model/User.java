@@ -43,6 +43,10 @@ public class User extends BaseEntity {
     )
     private String contactNumber;
 
+    @Lob
+    @Column(name = "profile_picture")
+    private byte[] image;
+
     @Embedded
     private Address address;
 

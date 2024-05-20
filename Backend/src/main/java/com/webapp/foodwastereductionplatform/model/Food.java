@@ -36,8 +36,14 @@ public class Food extends BaseEntity {
     @Column(name = "creation_date")
     private Timestamp creationDate;
 
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    public Food(String foodRequest, String burger, String description, int i, Date date, String location, String collected, Timestamp creationDate, User user) {
+    }
 }

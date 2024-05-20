@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.*;
 
 import java.util.*;
 
@@ -17,9 +18,9 @@ public class FoodController {
     private final FoodService foodService;
 
     @PostMapping("/food/{userId}")
-    public ResponseEntity<?> createFoodListing(@RequestBody FoodRequestDTO foodRequestDTO, @PathVariable Integer userId) {
+    public ResponseEntity<?> createFoodListing(@RequestBody FoodRequestDTO foodRequestDTO, @PathVariable Integer userId, @RequestParam("image") MultipartFile imageFile) {
         try {
-            FoodResponseDTO createdFoodListing = foodService.createFoodListing(foodRequestDTO, userId);
+            FoodResponseDTO createdFoodListing = foodService.createFoodListing(foodRequestDTO, userId, imageFile);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdFoodListing);
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -53,9 +54,9 @@ public class FoodController {
     }
 
     @PutMapping("/food/{userId}/{foodId}")
-    public ResponseEntity<?> updateFoodListingByUser(@PathVariable Integer userId, @PathVariable Integer foodId, @RequestBody FoodRequestDTO foodRequestDTO) {
+    public ResponseEntity<?> updateFoodListingByUser(@PathVariable Integer userId, @PathVariable Integer foodId, @RequestBody FoodRequestDTO foodRequestDTO, @RequestParam("image") MultipartFile imageFile) {
         try {
-            FoodResponseDTO updatedFoodResponseDTO = foodService.updateFoodListing(userId, foodId, foodRequestDTO);
+            FoodResponseDTO updatedFoodResponseDTO = foodService.updateFoodListing(userId, foodId, foodRequestDTO, imageFile);
             return ResponseEntity.ok(updatedFoodResponseDTO);
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

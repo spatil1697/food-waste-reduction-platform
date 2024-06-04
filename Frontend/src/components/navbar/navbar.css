@@ -10,7 +10,7 @@
   .navbar {
     height: 3.4rem;
     padding-top: 5px;
-    background-color: #41851bc7;
+    background-color: var(--color-primary);
     position: relative;
   }
   

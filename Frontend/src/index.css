@@ -108,14 +108,14 @@ img{
 }
 
 .full-width-background {
-    background-color: var(--color-bg-variant);
+    background-color: var(--color-primary);
     position: relative;
     width: 100%;
     padding: 6rem 0;
 }
 
 .full-width-background_light{
-    background-color: white;
+    background-color: var(--color-primary-variant);
     position: relative;
     width: 100%;
     padding: 6rem 0;

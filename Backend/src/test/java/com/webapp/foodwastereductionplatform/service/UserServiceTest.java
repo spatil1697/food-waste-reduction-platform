@@ -39,14 +39,11 @@ class UserServiceTest {
     @Test
     void testCreateUser() throws Exception {
         // Prepare test data
-        Address address = new Address("street 123", "Berlin", "Berlin", "10115", "Germany");
         UserSignUpRequestDTO userSignUpRequestDTO = new UserSignUpRequestDTO();
         userSignUpRequestDTO.setEmail("test@example.com");
         userSignUpRequestDTO.setPassword("password1@S");
         userSignUpRequestDTO.setFirstName("John");
         userSignUpRequestDTO.setLastName("Doe");
-        userSignUpRequestDTO.setAddress(address);
-        userSignUpRequestDTO.setContactNumber("1234567890");
         userSignUpRequestDTO.setUserType("Individual");
 
         // Mocking repository response

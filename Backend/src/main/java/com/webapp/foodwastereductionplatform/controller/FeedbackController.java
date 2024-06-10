@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class FeedbackController {
 
-    private final FeedbackService feedbackService;
+    private FeedbackService feedbackService;
 
     @PostMapping("/{userId}")
     public ResponseEntity<String> createFeedback(@RequestBody FeedbackRequestDTO feedbackRequestDTO, @PathVariable Integer userId) {

@@ -63,7 +63,7 @@ const Navbar = () => {
                             <span className="profile-text">Profile <FaAngleDown size="12px" /></span>
                             {showDropdown && (
                                 <div className="dropdown-menu">
-                                    <Link to="/Signup">Signup/Login</Link>
+                                    <Link to="/signup">Signup/Login</Link>
                                     <Link to="/my-food">My Food</Link>
                                     <Link to="/shopping-list">Shopping List</Link>
                                     <Link to="/food-requests">Food Requests</Link>

@@ -4,8 +4,8 @@ import './footer.css'
 const footer = () => {
   return (
  <footer>
-    <div class="top  footerbody">
-      <div class="pages">
+    <div className="top  footerbody">
+      <div className="pages">
         <ul>
           <h3>Name</h3>
           <li><a href="#">Home</a></li>
@@ -23,7 +23,7 @@ const footer = () => {
           <li><a href="#">Our Values</a></li>
         </ul>
       </div>
-      <div class="newsletter">
+      <div className="newsletter">
         <h3>Stay in Touch</h3>
         <form>
           <input

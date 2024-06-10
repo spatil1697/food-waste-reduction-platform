@@ -15,7 +15,7 @@ import java.util.*;
 @Tag(name = "Food")
 @AllArgsConstructor
 public class FoodController {
-    private final FoodService foodService;
+    private FoodService foodService;
 
     @PostMapping("/food/{userId}")
     public ResponseEntity<?> createFoodListing(@RequestBody FoodRequestDTO foodRequestDTO, @PathVariable Integer userId, @RequestParam("image") MultipartFile imageFile) {

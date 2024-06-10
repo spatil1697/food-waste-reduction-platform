@@ -32,12 +32,12 @@ public class FeedbackService {
 
         Optional<User> optionalUser = userRepository.findById(userId);
 
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                feedback.setUser(user);
-                feedbackRepository.save(feedback);
-            } else {
-                throw new EntityNotFoundException("User with ID " + userId + " not found");
-            }
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            feedback.setUser(user);
+            feedbackRepository.save(feedback);
+        } else {
+            throw new EntityNotFoundException("User with ID " + userId + " not found");
         }
+    }
 }

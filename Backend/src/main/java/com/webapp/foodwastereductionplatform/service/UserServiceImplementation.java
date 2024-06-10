@@ -6,8 +6,6 @@ import org.springframework.security.core.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.*;
 import  com.webapp.foodwastereductionplatform.model.User;
-
-import java.io.*;
 import java.util.*;
 
 @AllArgsConstructor
@@ -23,13 +21,13 @@ public class UserServiceImplementation implements UserDetailsService {
         }
         System.out.println("Loaded user: " + user.getEmail() + ", Role: " + user.getUserType());
 
-        // Assuming no role-based authentication is used
         List<GrantedAuthority> authorities = new ArrayList<>();
 
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                authorities
+            user.getEmail(),
+            user.getPassword(),
+            authorities
+
         );
     }
 }

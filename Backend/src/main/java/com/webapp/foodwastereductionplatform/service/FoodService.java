@@ -97,26 +97,31 @@ public class FoodService {
             throw new IllegalArgumentException("Missing user ID");
         }
     }
+
     private void validateFoodList(List<Food> foods, String errorMessage) {
         if (ObjectUtils.isEmpty(foods)) {
             throw new IllegalArgumentException(errorMessage);
         }
     }
+
     private void validateQuantity(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than zero");
         }
     }
+
     private User getUserById(Integer userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
     }
+
     private boolean isListingActive(Food foodListing) {
         return !foodListing.getStatus().equals("claimed")
                 && !foodListing.getStatus().equals("collected")
                 && !foodListing.getStatus().equals("fulfilled")
                 && (foodListing.getExpiryDate() == null || !foodListing.getExpiryDate().before(new Date()));
     }
+
     private FoodResponseDTO convertToDTO(Food food) {
         FoodResponseDTO foodResponseDTO = new FoodResponseDTO();
 
@@ -148,6 +153,7 @@ public class FoodService {
 
         return foodResponseDTO;
     }
+
     public void validateFoodRequest(FoodRequestDTO foodRequestDTO) {
         String requestType = foodRequestDTO.getRequestType().trim().toLowerCase().replace(" ", "");
 
@@ -166,6 +172,7 @@ public class FoodService {
             validateListingStatus(listingStatus, "open", "fulfilled");
         }
     }
+    
     private void validateListingStatus(String listingStatus, String... validStatuses) {
         if (!Arrays.asList(validStatuses).contains(listingStatus)) {
             throw new IllegalArgumentException("Invalid listing status. Listing status must be one of: " + String.join(", ", validStatuses));

@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     const data = await response.json();
 
     if (response.status === 200) {
-      setAuthTokens(data); // Assuming the JWT token is stored in data.jwt
+      setAuthTokens(data);
       setUser(jwtDecode(data.jwt)); // Decoding the JWT token
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/");

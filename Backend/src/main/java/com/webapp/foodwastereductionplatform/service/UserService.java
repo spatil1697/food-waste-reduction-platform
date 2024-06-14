@@ -77,7 +77,7 @@ public class UserService {
 
     public AuthUserResponseDTO updateUserData(UserSignUpUpdateRequestDTO userSignUpRequestDTO, Integer userId) {
 
-        User user =getUserById(userId);
+        User user =  getUserById(userId);
         String userType = userSignUpRequestDTO.getUserType().toLowerCase();
         validateUserType(userType);
 

@@ -5,11 +5,14 @@ import { FaBowlFood } from 'react-icons/fa6';
 import { CgProfile } from "react-icons/cg";
 import { FaAngleDown } from "react-icons/fa";
 import './navbar.css';
+import { useContext } from "react";
+import AuthContext from "../../context/AuthContext"
 
 const Navbar = () => {
     const [showNavbar, setShowNavbar] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownTimeoutRef = useRef(null);
+    const { user, logoutUser } = useContext(AuthContext);
 
     const handleShowNavbar = () => {
         setShowNavbar(!showNavbar);
@@ -63,7 +66,14 @@ const Navbar = () => {
                             <span className="profile-text">Profile <FaAngleDown size="12px" /></span>
                             {showDropdown && (
                                 <div className="dropdown-menu">
-                                    <Link to="/signup">Signup/Login</Link>
+                                    {user ? (
+                                        <>
+                                            <Link to='/profile'>Profile</Link>
+                                            <Link onClick={logoutUser}>Logout</Link>
+                                        </>
+                                    ) : (
+                                        <Link to="/signup">Signup/Login</Link>
+                                    )}
                                     <Link to="/my-food">My Food</Link>
                                     <Link to="/shopping-list">Shopping List</Link>
                                     <Link to="/food-requests">Food Requests</Link>
@@ -75,7 +85,7 @@ const Navbar = () => {
                 </div>
             </div>
         </nav>
-    )
+    );
 }
 
 export default Navbar;

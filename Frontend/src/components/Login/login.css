@@ -1,16 +1,16 @@
-.signup{
+.login{
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: auto;
-    height: 120vh;
+    height: 100vh;
     background-color: var(--color-primary-variant);
     
 }
 
-.signup-div{
-    margin-top: 80px;
+.login-div{
+    margin-top: 90px;
     background-color: var(--color-primary);
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@
     text-align: center;
 }
 
-.signup-text{
+.login-text{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,7 +73,10 @@
     font-size: 19px;
 }
 
-.auth-toggle{
+.auth-toggle-login{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     margin: 25px 0 30px;
     font-size: 16px;
 }
@@ -87,7 +90,7 @@
     cursor: pointer;
   }
 
-.auth-toggle span{
+.auth-toggle-login span{
     color: rgb(57, 57, 139);
     cursor: pointer;
 }
@@ -127,22 +130,3 @@
     font-weight: 700;
     cursor: pointer;
 }
-
-.hide {
-    display: none;
-}
-
-.userType{
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-  
-  .userType select {
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 8px 12px;
-    background-color: var(--color-white);
-  }
-  

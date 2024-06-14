@@ -8,16 +8,14 @@ const AuthContext = createContext();
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
+  
   const [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens"))
       : null
   );
-  const [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? jwtDecode(localStorage.getItem("authTokens"))
-      : null
-  );
+
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -25,7 +23,8 @@ export const AuthProvider = ({ children }) => {
   // If the user is present in the database (credentials are valid), 
   // the user is logged in. 
   const loginUser = async (email, password) => {
-    const response = await fetch("http://localhost:8080/user/login", {
+    try {
+      const response = await fetch("http://localhost:8080/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -35,15 +34,27 @@ export const AuthProvider = ({ children }) => {
         password,
       })
     });
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.status === 200) {
-      setAuthTokens(data);
-      setUser(jwtDecode(data.jwt)); // Decoding the JWT token
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/");
-    } else {
-      alert("You have entered an invalid username or password!");
+      if (response.status === 200) {
+        setAuthTokens(data);
+        setUser({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          userType: data.userType,
+          address: data.address,
+          contactNumber: data.contactNumber
+        });
+  
+        localStorage.setItem("authTokens", JSON.stringify(data));
+      }
+    
+      return response;
+
+    } catch (error) {
+      console.error("Error during Login:", error);
+      throw new Error("An error occurred. Please try again.");
     }
   };
   
@@ -79,7 +90,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authTokens");
     navigate("/");
   };
-
   
   const contextData = {
     user,
@@ -91,15 +101,20 @@ export const AuthProvider = ({ children }) => {
     logoutUser
   };
 
-
   useEffect(() => {
-    if (authTokens) {
-      const decodedUser = jwtDecode(authTokens.jwt); // Accessing the JWT token
-      setUser(decodedUser);
+    if (authTokens && authTokens.firstName && authTokens.lastName && authTokens.email && authTokens.userType) {
+      setUser({
+        firstName: authTokens.firstName,
+        lastName: authTokens.lastName,
+        email: authTokens.email,
+        userType: authTokens.userType,
+        address: authTokens.address,
+        contactNumber: authTokens.contactNumber
+      });
     }
-    setLoading(false);
-  }, [authTokens]);
-
+    setLoading(false); 
+  }, [authTokens]); 
+  
   return (
     <AuthContext.Provider value={contextData}>
       {loading ? null : children}

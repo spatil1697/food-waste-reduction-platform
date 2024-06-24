@@ -12,6 +12,7 @@ public class AuthUserResponseDTO {
     private String jwt;
     private String message;
     private Boolean status;
+    private Integer userID;
     private String firstName;
     private String lastName;
     private String email;

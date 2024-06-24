@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         setAuthTokens(data);
         setUser({
+          userID: data.userID,
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
@@ -46,12 +47,11 @@ export const AuthProvider = ({ children }) => {
           address: data.address,
           contactNumber: data.contactNumber
         });
-  
+        console.log(data);
         localStorage.setItem("authTokens", JSON.stringify(data));
       }
     
       return response;
-
     } catch (error) {
       console.error("Error during Login:", error);
       throw new Error("An error occurred. Please try again.");
@@ -90,6 +90,31 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authTokens");
     navigate("/");
   };
+
+  // Delete the user & clears the local storage.
+  const deleteUser = async (email, password) => {
+    try {
+      const response = await fetch(`http://localhost:8080/user/deleteUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        return response;
+      }
+
+      setAuthTokens(null);
+      setUser(null);
+      localStorage.removeItem("authTokens");
+      navigate("/");
+  
+      console.log('Profile deleted successfully');
+    } catch (error) {
+      console.error('Error while deleting profile:', error.message);
+    }
+  };
   
   const contextData = {
     user,
@@ -98,12 +123,14 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    deleteUser
   };
 
   useEffect(() => {
     if (authTokens && authTokens.firstName && authTokens.lastName && authTokens.email && authTokens.userType) {
       setUser({
+        userID: authTokens.userID,
         firstName: authTokens.firstName,
         lastName: authTokens.lastName,
         email: authTokens.email,

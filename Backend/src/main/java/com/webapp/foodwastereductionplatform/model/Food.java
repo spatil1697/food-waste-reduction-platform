@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.*;
 
 import java.sql.*;
-import java.util.*;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)

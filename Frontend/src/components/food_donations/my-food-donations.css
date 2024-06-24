@@ -1,0 +1,23 @@
+.advertise-donation {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.donation-button {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-bg-variant);
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.3s, background-color 0.3s;
+    cursor: pointer;
+}
+
+.donation-text {
+    margin-left: 8px;
+}
+.donation-button:hover {
+    color: var(--color-bg-variant);
+    background-color: var(--color-primary); 
+}

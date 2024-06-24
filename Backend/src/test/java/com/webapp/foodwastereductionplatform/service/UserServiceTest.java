@@ -13,7 +13,14 @@ import org.springframework.security.core.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -134,6 +141,7 @@ class UserServiceTest {
         Address address = new Address("street 123", "Berlin", "Berlin", "10115", "Germany");
         UserSignUpUpdateRequestDTO userSignUpUpdateRequestDTO = new UserSignUpUpdateRequestDTO();
         userSignUpUpdateRequestDTO.setLastName("Doe");
+        userSignUpUpdateRequestDTO.setFirstName("John");
         userSignUpUpdateRequestDTO.setAddress(address);
         userSignUpUpdateRequestDTO.setContactNumber("1234567890");
         userSignUpUpdateRequestDTO.setUserType("Individual");
@@ -175,33 +183,82 @@ class UserServiceTest {
         });
     }
 
+   
     @Test
-    void testDeleteUserById() {
+    void testGetUserData() {
+
         // Prepare test data
         Integer userId = 1;
         User user = new User();
+        Address address = new Address("Street 123", "Berlin", "Berlin", "10115", "Germany");
         user.setId(userId);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setAddress(address);
+        user.setContactNumber("1234567890");
+        user.setUserType("admin");
+        user.setEmail("john.doe@example.com");
 
         // Mocking repository response
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // Invoke the method under test
-        userService.deleteUserById(userId);
+        AuthUserResponseDTO result = userService.getUserData(userId);
+
+        // Verify repository method call
+        verify(userRepository, times(1)).findById(userId);
+
+        // Assert the returned user data
+        assertNotNull(result);
+        assertEquals("User updated successfully", result.getMessage());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        Address resultAddress = result.getAddress();
+        assertNotNull(resultAddress);
+        assertEquals("Street 123", resultAddress.getStreetAddress());
+        assertEquals("Berlin", resultAddress.getCity());
+        assertEquals("Berlin", resultAddress.getState());
+        assertEquals("10115", resultAddress.getPostalCode());
+        assertEquals("Germany", resultAddress.getCountry());
+    
+        assertEquals("1234567890", result.getContactNumber());
+        assertEquals("admin", result.getUserType());
+        assertEquals("john.doe@example.com", result.getEmail());
+    }
+
+
+    @Test
+    void testDeleteUserById() {
+        // Prepare test data
+        String email = "sam@gmail.com";
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword("safaffsfs");
+
+        // Mocking repository response
+        when(userRepository.findByEmail(email)).thenReturn((user));
+
+        // Invoke the method under test
+        userRepository.delete(user);
 
         // Verify repository method call
         Mockito.verify(userRepository, Mockito.times(1)).delete(user);
     }
 
     @Test
-    void testDeleteUserByIdWithNonExistingUser() {
-        Integer userId = 1;
+    void testDeleteUserWithNonExistingUser() {
+        String email = "sam@gmail.com";
+        String password = "adaddsd";
 
         // Mocking repository response
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(email)).thenReturn(null);
 
-        // Invoke the method under test
-        Assertions.assertThrows(EntityNotFoundException.class, () -> {
-            userService.deleteUserById(userId);
+        // Invoke the method under test and assert that an exception is thrown
+        BadCredentialsException thrown = Assertions.assertThrows(BadCredentialsException.class, () -> {
+            userService.deleteUser(email, password);
         });
+
+        // Assert that the exception message is correct
+        Assertions.assertEquals("Invalid email and password", thrown.getMessage());
     }
 }

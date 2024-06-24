@@ -8,13 +8,20 @@ import Login from "./components/Login/Login";
 import Profile from "./components/Profile/Profile";
 import Root from './root'
 import { AuthProvider } from "./context/AuthContext";
+import { ProfileProvider } from './context/ProfileContext';
+import MyProfile from './components/Profile/MyProfile';
+import DeleteAccount from './components/Profile/DeleteAccount';
+import MyFoodDonations from './components/food_donations/MyFoodDonations';
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AuthProvider> 
-        <Root />
+      <AuthProvider>
+        <ProfileProvider> 
+          <Root />
+        </ProfileProvider>
       </AuthProvider>
     ),
     children: [
@@ -31,8 +38,13 @@ const router = createBrowserRouter([
         element: <Login/>,
       },
       {
-        path: "/profile",
-        element: <Profile/>,
+        path: '/profile',
+        element: <Profile />,
+        children: [
+          { path: '', element: <MyProfile /> },
+          { path: 'delete-account', element: <DeleteAccount /> },
+          { path: 'my-food-donations', element: <MyFoodDonations /> }
+        ]
       }
 
     ],

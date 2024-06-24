@@ -30,6 +30,7 @@ public class FoodService {
 
         return foods.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+    
     public List<FoodResponseDTO> getAllFoodListings() {
         List<Food> foods = foodRepository.findAll();
         validateFoodList(foods, "No food listings found");

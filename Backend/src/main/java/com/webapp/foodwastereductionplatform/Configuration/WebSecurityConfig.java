@@ -31,17 +31,20 @@ public class WebSecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
-        configuration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        return new CorsConfigurationSource() { 
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) { 
+                CorsConfiguration ccfg = new CorsConfiguration(); 
+                ccfg.setAllowedOrigins(Arrays.asList("http://localhost:3000")); 
+                ccfg.setAllowedMethods(Collections.singletonList("*")); 
+                ccfg.setAllowCredentials(true); 
+                ccfg.setAllowedHeaders(Collections.singletonList("*")); 
+                ccfg.setExposedHeaders(Arrays.asList("Authorization")); 
+                ccfg.setMaxAge(3600L); 
+                return ccfg; 
+  
+            } 
+        }; 
     }
 
     @Bean

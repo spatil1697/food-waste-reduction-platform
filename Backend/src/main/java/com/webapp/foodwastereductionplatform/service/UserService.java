@@ -2,11 +2,11 @@ package com.webapp.foodwastereductionplatform.service;
 
 import com.webapp.foodwastereductionplatform.Configuration.*;
 import com.webapp.foodwastereductionplatform.dto.*;
-import com.webapp.foodwastereductionplatform.model.*;
 import com.webapp.foodwastereductionplatform.model.User;
 import com.webapp.foodwastereductionplatform.repositories.*;
 import jakarta.persistence.*;
 import lombok.*;
+
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.*;
 import org.springframework.security.core.context.*;
@@ -21,7 +21,7 @@ public class UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private UserServiceImplementation customUserDetails;
-    
+
     public AuthUserRequestDTO createUser(UserSignUpRequestDTO userSignUpRequest) {
         String userType = userSignUpRequest.getUserType().toLowerCase();
         isEmailUnique(userSignUpRequest.getEmail());
@@ -42,7 +42,7 @@ public class UserService {
                 .lastName(lastName)
                 .userType(userType)
                 .build();
-        User savedUser = userRepository.save(createdUser);
+        userRepository.save(createdUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -68,6 +68,7 @@ public class UserService {
                 .message("Login success")
                 .jwt(token)
                 .status(true)
+                .userID(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .userType(user.getUserType())
@@ -76,6 +77,18 @@ public class UserService {
     }
 
     public AuthUserResponseDTO updateUserData(UserSignUpUpdateRequestDTO userSignUpRequestDTO, Integer userId) {
+      
+        if (isEmptyOrNull(userSignUpRequestDTO.getFirstName()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getLastName()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getAddress().getStreetAddress()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getAddress().getCountry()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getAddress().getPostalCode()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getUserType()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getAddress().getState()) ||
+        isEmptyOrNull(userSignUpRequestDTO.getAddress().getCity()) ||
+        userId == null || userId == 0) {
+            throw new IllegalArgumentException("All fields except contact number must be present and cannot be empty.");
+        }
 
         User user =  getUserById(userId);
         String userType = userSignUpRequestDTO.getUserType().toLowerCase();
@@ -100,8 +113,30 @@ public class UserService {
                 .build();
     }
 
-    public void deleteUserById(Integer userId) {
-        User user =getUserById(userId);
+    public AuthUserResponseDTO getUserData(Integer userId) {
+        
+        if (userId == null) {
+                throw new IllegalArgumentException("UserId must not be null");
+        }
+
+        User user =  userRepository.findById(userId)
+        .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
+
+        return AuthUserResponseDTO.builder()
+                .message("User updated successfully")
+                .status(true)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .address(user.getAddress())
+                .contactNumber(user.getContactNumber())
+                .userType(user.getUserType())
+                .email(user.getEmail())
+                .build();
+    }
+
+    public void deleteUser(String email, String password) {
+        Authentication authentication = authenticate(email, password);
+        User user = userRepository.findByEmail(email);
         userRepository.delete(user);
     }
 
@@ -156,6 +191,10 @@ public class UserService {
     private boolean isValidPassword(String password) {
         String passwordRegex = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+\\\\|[{]};:'\",<.>/?]).{8,}$";
         return password.matches(passwordRegex);
+    }
+
+    private boolean isEmptyOrNull(String str) {
+        return str == null || str.isEmpty();
     }
 }
 

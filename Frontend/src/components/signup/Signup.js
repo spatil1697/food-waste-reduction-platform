@@ -28,32 +28,31 @@ const Signup = () => {
     return re.test(password);
   };
 
-  const timeout = setTimeout(() => setError(""), 5000);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const timeout = setTimeout(() => setError(""), 5000);
     if (errorTimeout) {
-      clearTimeout(errorTimeout); // Clear existing timeout if any
+      clearTimeout(errorTimeout); 
     }
 
     if (!firstName || !lastName || !email || !password || !userType) {
       setError("All fields are required.");
       setSuccess("");
-      setErrorTimeout(timeout);
       return;
     }
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address 'example@gmail.com'");
       setSuccess("");
-      setErrorTimeout(timeout);
       return;
     }
 
     if (!validatePassword(password)) {
       setError("Password must be at least 6 characters, one number, one uppercase letter, and one special character.");
       setSuccess("");
-      setErrorTimeout(timeout);
       return;
     }
 
@@ -63,22 +62,19 @@ const Signup = () => {
         setError("");
         setSuccess("Signup Successful");
         setTimeout(() => {
-        window.location.reload();
+          navigate('/login')
           }, 3000);
       } else if (response.status === 400) {
-          const errorMessage = await response.text();
-          setError(errorMessage);
+          const errorMessage = await response.json();
+          setError(errorMessage.message);
           setSuccess("");
-          setErrorTimeout(timeout);
-      } else {
-          setError("An error occurred. Please try again.");
-          setSuccess(""); 
-          setErrorTimeout(timeout);
+      }else {
+        setError("An error occurred. Please try again later.");
+        setSuccess("");
       }
     } catch (error) {
-        setError("An error occurred. Please try again.");
-        setSuccess(""); 
-        setErrorTimeout(timeout);
+        setError("An error occurred. Please try again later.");
+        setSuccess("");
     }
   };
 
@@ -143,25 +139,25 @@ const Signup = () => {
        
  
         <div className='userType' id="userType-select" >
-          <label htmlFor="userType-select">Select a User Type:</label>
+          <label htmlFor="userType-select">User Type:</label>
           <select 
             value={userType} 
             onChange={(e) => {
             setUserType(e.target.value);
           }}
           >
-            <option value="">--Please choose an option--</option>
+            <option value="">Please choose an option</option>
             <option value="Individual">Individual</option>
             <option value="Organization">Organization</option>
           </select>
         </div>
     
         
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
+        <div className={`error-message-signup ${error ? 'show' : ''}`}>{error}</div>
+        <div className={`success-message-signup ${success ? 'show' : ''}`}>{success}</div>
 
         <div className='submit-container'>
-          <div className='submit' 
+          <div className='btn' 
             onClick={(e) => {
               handleSubmit(e);
             }}

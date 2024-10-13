@@ -11,7 +11,6 @@ import java.sql.*;
 @Data
 public class FoodResponseDTO {
 
-    private String requestType;
     private String contactNumber;
     private String email;
     private String firstName;

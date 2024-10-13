@@ -30,11 +30,8 @@ public class AnalyticsService {
                 .filter(foodListing -> foodListing.getStatus().equals("collected"))
                 .count();
 
-        long fulfilledRequestsCount = foods.stream()
-                .filter(foodRequest -> foodRequest.getStatus().equals("fulfilled"))
-                .count();
 
-        double overallSuccessPercentage = (double) (collectedListingsCount + fulfilledRequestsCount) / (double) totalFood * 100.0;
+        double overallSuccessPercentage = (double) (collectedListingsCount) / (double) totalFood * 100.0;
 
         if (Double.isNaN(overallSuccessPercentage)) {
             overallSuccessPercentage = 0.0;

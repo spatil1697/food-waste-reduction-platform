@@ -11,7 +11,6 @@ import java.util.*;
 @Data
 public class FoodRequestDTO {
 
-    private String requestType;
     private String foodItem;
     private String description;
     private int quantity;

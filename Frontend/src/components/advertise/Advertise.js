@@ -14,7 +14,7 @@ const Advertise = () => {
   const { advertise, updateAdvertiseData, saveAdvertiseData } = useAdvertise();
 
   const advertiseFields = [
-    { label: 'Food Item Name*', name: 'foodItemName', placeholder: 'Enter the food item name', error: 'Please enter the food item name.', required: true },
+    { label: 'Food Item Name*', name: 'foodItem', placeholder: 'Enter the food item name', error: 'Please enter the food item name.', required: true },
     { label: 'Description', name: 'description', placeholder: 'Enter the description', error: 'Please enter the description.', required: false },
     { label: 'Pickup Location*', name: 'pickupLocation', placeholder: 'Enter the pickup location', error: 'Please enter the pickup location.', required: true },
   ];  
@@ -54,7 +54,7 @@ const Advertise = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateFields()) {
-    saveAdvertiseData();
+    saveAdvertiseData(fileUploadRef);
     }
   };
 

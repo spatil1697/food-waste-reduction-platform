@@ -43,7 +43,7 @@ class AnalyticsServiceTest {
                 "+40 12114234234");
 
         List<Food> foods = new ArrayList<>();
-        foods.add(new Food("food Request",
+        foods.add(new Food(
                 "Burger",
                 "Description",
                 1,
@@ -52,7 +52,7 @@ class AnalyticsServiceTest {
                 "collected",
                 creationDate, user));
 
-        foods.add(new Food("food Request",
+        foods.add(new Food(
                 "Burger",
                 "Description",
                 1,

@@ -54,7 +54,6 @@ public class FoodService {
                 .quantity(foodRequestDTO.getQuantity())
                 .expiryDate(foodRequestDTO.getExpiryDate())
                 .pickupLocation(foodRequestDTO.getPickupLocation())
-                .requestType(foodRequestDTO.getRequestType())
                 .status(foodRequestDTO.getListingStatus())
                 .creationDate(new Timestamp(System.currentTimeMillis()))
                 .image(imageFile != null ? imageFile.getBytes() : null)
@@ -86,7 +85,7 @@ public class FoodService {
         existingFood.setExpiryDate(foodRequestDTO.getExpiryDate());
         existingFood.setPickupLocation(foodRequestDTO.getPickupLocation());
         existingFood.setStatus(foodRequestDTO.getListingStatus());
-        existingFood.setRequestType(foodRequestDTO.getRequestType());
+
         if (imageFile != null) {
             existingFood.setImage(imageFile.getBytes());
         }
@@ -116,7 +115,7 @@ public class FoodService {
     private FoodResponseDTO convertToDTO(Food food) {
         FoodResponseDTO foodResponseDTO = new FoodResponseDTO();
 
-        if (food.getExpiryDate() != null && food.getExpiryDate().before(new Date()) && "foodlisting".equals(food.getRequestType())) {
+        if (food.getExpiryDate() != null && food.getExpiryDate().before(new Date())) {
             foodResponseDTO.setStatus("expired");
         } else {
             foodResponseDTO.setStatus(food.getStatus());
@@ -127,7 +126,6 @@ public class FoodService {
         foodResponseDTO.setQuantity(food.getQuantity());
         foodResponseDTO.setPickupLocation(food.getPickupLocation());
         foodResponseDTO.setCreationDate(food.getCreationDate());
-        foodResponseDTO.setRequestType(food.getRequestType());
 
         User user = food.getUser();
         if (user != null) {
@@ -174,12 +172,6 @@ public class FoodService {
                 && !foodListing.getStatus().equals("fulfilled")
                 && (foodListing.getExpiryDate() == null || !foodListing.getExpiryDate().before(new Date()));
     }
-    
-    private void validateListingStatus(String listingStatus, String... validStatuses) {
-        if (!Arrays.asList(validStatuses).contains(listingStatus)) {
-            throw new IllegalArgumentException("Invalid listing status. Listing status must be one of: " + String.join(", ", validStatuses));
-        }
-    }
 
     private void validateFoodRequest(FoodRequestDTO foodRequestDTO, Integer userId, MultipartFile imageFile){
         if (isEmptyOrNull(foodRequestDTO.getFoodItem()) ||
@@ -191,21 +183,14 @@ public class FoodService {
             throw new IllegalArgumentException("All fields except contact number must be present and cannot be empty.");
         }
 
-        String requestType = foodRequestDTO.getRequestType().trim().toLowerCase().replace(" ", "");
-
-        if (!requestType.equals("foodlisting") && !requestType.equals("foodrequest")) {
-            throw new IllegalArgumentException("Invalid request type. Request Type must be 'foodlisting' or 'foodrequest'");
-        }
-
         String listingStatus = foodRequestDTO.getListingStatus().toLowerCase();
 
-        if (requestType.equals("foodlisting")) {
-            if (foodRequestDTO.getExpiryDate() == null) {
-                throw new IllegalArgumentException("Expiry date is required for food listing");
-            }
-            validateListingStatus(listingStatus, "available", "claimed", "collected", "expired");
-        } else {
-            validateListingStatus(listingStatus, "open", "fulfilled");
+        if (!listingStatus.equals("available") && 
+            !listingStatus.equals("claimed") && 
+            !listingStatus.equals("collected") && 
+            !listingStatus.equals("expired")) {
+
+                throw new IllegalArgumentException("Listing status must be one of the following: available, claimed, collected, expired.");
         }
     }
 

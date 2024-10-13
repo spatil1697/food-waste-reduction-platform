@@ -9,14 +9,13 @@ export const AdvertiseProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const [advertise, setAdvertise] = useState({
+    description:'',
     foodItem: '',
     description: '',
-    pickupLocation: '',
     quantity: 1,
     expiryDate: new Date(),
+    pickupLocation: '',
     listingStatus: '',
-    description:'',
-    image:''
   });
 
   const updateAdvertiseData = (name, value) => {
@@ -26,34 +25,41 @@ export const AdvertiseProvider = ({ children }) => {
     });
   };
 
-  const saveAdvertiseData = async () => {
+  const saveAdvertiseData = async (fileUploadRef) => {
     try {
-      if (user) {
-        const dataToSubmit = {
-          ...advertise,
-          expiryDate: advertise.expiryDate.toISOString(),
-          
-        };
+      if (!user) throw new Error('User information not available.');
+  
+      const formData = new FormData();
+      const { image, ...advertiseData } = advertise;
 
-        const response = await fetch(`http://localhost:8080/food/${user.userID}`, {
-          method: 'POST',
-          body: dataToSubmit,
-        });
+      advertiseData.expiryDate = advertise.expiryDate.toISOString();
+      formData.append("foodRequestDTO", JSON.stringify(advertiseData));
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const result = await response.json();
-        console.log('Submission successful', result);
-        navigate('/'); // Redirect to a success page or another route after submission
+      const uploadedFile = fileUploadRef.current?.files[0];
+      if (uploadedFile) {
+        formData.append("image", uploadedFile);
       } else {
-        throw new Error('User information not available.');
+        console.warn('No image uploaded.');
       }
+  
+      // Make the POST request
+      const response = await fetch(`http://localhost:8080/food/${user.userID}`, {
+        method: 'POST',
+        body: formData, // Content-Type will be automatically set by FormData
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const result = await response.json();
+      console.log('Submission successful', result);
+      navigate('/'); // Redirect after successful submission
     } catch (error) {
       console.error('There was a problem with the submission', error);
     }
   };
+  
 
   return (
     <AdvertiseContext.Provider

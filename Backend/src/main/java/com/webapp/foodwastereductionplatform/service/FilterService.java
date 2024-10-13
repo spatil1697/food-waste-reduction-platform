@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+/*@Service
 @AllArgsConstructor
 public class FilterService {
 
@@ -37,18 +37,11 @@ public class FilterService {
     }
 
     private boolean isValidFood(Food food, String requestType) {
-        if ("foodlisting".equals(requestType)) {
             return food.getRequestType().equals(requestType)
                     && !"claimed".equals(food.getStatus())
                     && !"collected".equals(food.getStatus())
                     && !"fulfilled".equals(food.getStatus())
                     && (food.getExpiryDate() == null || food.getExpiryDate().after(new Date()));
-        } else {
-            return food.getRequestType().equalsIgnoreCase(requestType)
-                    && !"claimed".equals(food.getStatus())
-                    && !"collected".equals(food.getStatus())
-                    && !"fulfilled".equals(food.getStatus());
-        }
     }
 
     private FilteredAvailableFoodResponseDTO convertToDTO(Food food) {
@@ -73,6 +66,6 @@ public class FilterService {
 
         return filteredAvailableFood;
     }
-}
+}*/
 
 

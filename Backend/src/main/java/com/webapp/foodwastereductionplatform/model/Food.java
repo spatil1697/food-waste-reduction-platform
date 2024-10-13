@@ -15,9 +15,6 @@ import java.util.Date;
 @Entity
 public class Food extends BaseEntity {
 
-    @Column(name = "request_type")
-    private String requestType;
-
     @Column(name = "food_item")
     private String foodItem;
 
@@ -43,6 +40,6 @@ public class Food extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Food(String foodRequest, String burger, String description, int i, Date date, String location, String collected, Timestamp creationDate, User user) {
+    public Food(String burger, String description, int i, Date date, String location, String collected, Timestamp creationDate, User user) {
     }
 }

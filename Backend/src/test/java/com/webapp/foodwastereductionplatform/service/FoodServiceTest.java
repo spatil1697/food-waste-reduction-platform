@@ -31,7 +31,6 @@ class FoodServiceTest {
     void testCreateFoodListing() throws Exception {
         // Prepare test data
         FoodRequestDTO foodRequestDTO = new FoodRequestDTO();
-        foodRequestDTO.setRequestType("food Listing");
         foodRequestDTO.setFoodItem("Test Food");
         foodRequestDTO.setDescription("Test Description");
         foodRequestDTO.setQuantity(1);
@@ -61,7 +60,6 @@ class FoodServiceTest {
         Integer userId = 1;
         Integer foodId = 1;
         FoodRequestDTO foodRequestDTO = new FoodRequestDTO();
-        foodRequestDTO.setRequestType("food Listing");
         foodRequestDTO.setFoodItem("Test Food");
         foodRequestDTO.setDescription("Test Description");
         foodRequestDTO.setQuantity(1);
@@ -113,7 +111,6 @@ class FoodServiceTest {
         // Prepare test data
         List<Food> foods = new ArrayList<>();
         Food food1 = new Food();
-        food1.setRequestType("food listing");
         food1.setFoodItem("Test Food 1");
         food1.setDescription("Description for Test Food 1");
         food1.setQuantity(1);
@@ -121,7 +118,6 @@ class FoodServiceTest {
         food1.setStatus("available");
 
         Food food2 = new Food();
-        food2.setRequestType("food listing");
         food2.setFoodItem("Test Food 2");
         food2.setDescription("Description for Test Food 2");
         food2.setQuantity(2);

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@RestController
+/*@RestController
 @Tag(name = "Filtered Food Requests and Listings")
 @AllArgsConstructor
 public class FilterController {
@@ -27,4 +27,4 @@ public class FilterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + e.getMessage());
         }
     }
-}
+}*/

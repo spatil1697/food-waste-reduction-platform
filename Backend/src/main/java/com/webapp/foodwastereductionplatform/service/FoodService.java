@@ -42,10 +42,11 @@ public class FoodService {
         return filteredListings.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public FoodResponseDTO createFoodListing(FoodRequestDTO foodRequestDTO, Integer userId, MultipartFile imageFile) throws IOException {
-        validateFoodRequest(foodRequestDTO);
+    public FoodResponseDTO createFoodListing(FoodRequestDTO foodRequestDTO, Integer userId, MultipartFile imageFile) throws Exception {
+        validateFoodRequest(foodRequestDTO, userId, imageFile);
         validateUserId(userId);
         validateQuantity(foodRequestDTO.getQuantity());
+        validateImageFile(imageFile);
 
         Food food = Food.builder()
                 .foodItem(foodRequestDTO.getFoodItem())
@@ -64,9 +65,10 @@ public class FoodService {
         foodRepository.save(food);
         return convertToDTO(food);
     }
+    
 
     public FoodResponseDTO updateFoodListing(Integer userId, Integer foodId, FoodRequestDTO foodRequestDTO, MultipartFile imageFile) throws IOException {
-        validateFoodRequest(foodRequestDTO);
+        validateFoodRequest(foodRequestDTO, userId, imageFile);
         validateUserId(userId);
         validateQuantity(foodRequestDTO.getQuantity());
         getUserById(userId);
@@ -93,36 +95,24 @@ public class FoodService {
         return convertToDTO(existingFood);
     }
 
-    private void validateUserId(Integer userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("Missing user ID");
+    private void validateImageFile(MultipartFile imageFile) throws Exception {
+        String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+        try {
+
+            if(fileName.contains("..")) {
+                throw  new Exception("Filename contains invalid path sequence " + fileName);
+            }
+             if (imageFile.getBytes().length > (1024 * 1024)) {
+                throw new Exception("File size exceeds maximum limit");
+            }
+        } catch (MaxUploadSizeExceededException e) {
+            throw new MaxUploadSizeExceededException(imageFile.getSize());
+        } catch (Exception e) {
+            throw new Exception("Could not save File: " + fileName);
         }
     }
 
-    private void validateFoodList(List<Food> foods, String errorMessage) {
-        if (ObjectUtils.isEmpty(foods)) {
-            throw new IllegalArgumentException(errorMessage);
-        }
-    }
-
-    private void validateQuantity(int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero");
-        }
-    }
-
-    private User getUserById(Integer userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
-    }
-
-    private boolean isListingActive(Food foodListing) {
-        return !foodListing.getStatus().equals("claimed")
-                && !foodListing.getStatus().equals("collected")
-                && !foodListing.getStatus().equals("fulfilled")
-                && (foodListing.getExpiryDate() == null || !foodListing.getExpiryDate().before(new Date()));
-    }
-
+    
     private FoodResponseDTO convertToDTO(Food food) {
         FoodResponseDTO foodResponseDTO = new FoodResponseDTO();
 
@@ -155,7 +145,52 @@ public class FoodService {
         return foodResponseDTO;
     }
 
-    public void validateFoodRequest(FoodRequestDTO foodRequestDTO) {
+    private void validateUserId(Integer userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Missing user ID");
+        }
+    }
+
+    private void validateFoodList(List<Food> foods, String errorMessage) {
+        if (ObjectUtils.isEmpty(foods)) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+        }
+    }
+
+    private User getUserById(Integer userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
+    }
+
+    private boolean isListingActive(Food foodListing) {
+        return !foodListing.getStatus().equals("claimed")
+                && !foodListing.getStatus().equals("collected")
+                && !foodListing.getStatus().equals("fulfilled")
+                && (foodListing.getExpiryDate() == null || !foodListing.getExpiryDate().before(new Date()));
+    }
+    
+    private void validateListingStatus(String listingStatus, String... validStatuses) {
+        if (!Arrays.asList(validStatuses).contains(listingStatus)) {
+            throw new IllegalArgumentException("Invalid listing status. Listing status must be one of: " + String.join(", ", validStatuses));
+        }
+    }
+
+    private void validateFoodRequest(FoodRequestDTO foodRequestDTO, Integer userId, MultipartFile imageFile){
+        if (isEmptyOrNull(foodRequestDTO.getFoodItem()) ||
+        isEmptyOrNull(foodRequestDTO.getPickupLocation()) ||
+        isEmptyOrNull(foodRequestDTO.getListingStatus()) ||
+        foodRequestDTO.getQuantity() <= 0 ||
+        foodRequestDTO.getExpiryDate() == null || userId == null || 
+        userId == 0 || imageFile.isEmpty() || imageFile == null){
+            throw new IllegalArgumentException("All fields except contact number must be present and cannot be empty.");
+        }
+
         String requestType = foodRequestDTO.getRequestType().trim().toLowerCase().replace(" ", "");
 
         if (!requestType.equals("foodlisting") && !requestType.equals("foodrequest")) {
@@ -173,10 +208,8 @@ public class FoodService {
             validateListingStatus(listingStatus, "open", "fulfilled");
         }
     }
-    
-    private void validateListingStatus(String listingStatus, String... validStatuses) {
-        if (!Arrays.asList(validStatuses).contains(listingStatus)) {
-            throw new IllegalArgumentException("Invalid listing status. Listing status must be one of: " + String.join(", ", validStatuses));
-        }
+
+    private boolean isEmptyOrNull(String str) {
+        return str == null || str.isEmpty();
     }
 }

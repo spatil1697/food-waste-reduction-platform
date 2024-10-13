@@ -1,5 +1,7 @@
 package com.webapp.foodwastereductionplatform.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webapp.foodwastereductionplatform.dto.*;
 import com.webapp.foodwastereductionplatform.service.*;
 import io.swagger.v3.oas.annotations.tags.*;
@@ -17,17 +19,28 @@ import java.util.*;
 public class FoodController {
     private FoodService foodService;
 
-    @PostMapping("/food/{userId}")
-    public ResponseEntity<?> createFoodListing(@RequestBody FoodRequestDTO foodRequestDTO, @PathVariable Integer userId, @RequestParam("image") MultipartFile imageFile) {
+    @PostMapping(value = "/food/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createFoodListing(
+    @RequestPart("foodRequestDTO") String foodRequestDTOString,
+    @PathVariable Integer userId,
+    @RequestParam(value = "image", required = true) MultipartFile imageFile) {
+    
         try {
+            // Convert the JSON string to FoodRequestDTO
+            ObjectMapper objectMapper = new ObjectMapper();
+            FoodRequestDTO foodRequestDTO = objectMapper.readValue(foodRequestDTOString, FoodRequestDTO.class);
             FoodResponseDTO createdFoodListing = foodService.createFoodListing(foodRequestDTO, userId, imageFile);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdFoodListing);
+        
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body("Invalid JSON format for foodRequestDTO");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/food/{userId}")
     public ResponseEntity<?> getAllFoodListingsByUser(@PathVariable Integer userId) {

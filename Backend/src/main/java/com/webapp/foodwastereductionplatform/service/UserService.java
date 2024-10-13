@@ -79,15 +79,15 @@ public class UserService {
     public AuthUserResponseDTO updateUserData(UserSignUpUpdateRequestDTO userSignUpRequestDTO, Integer userId) {
       
         if (isEmptyOrNull(userSignUpRequestDTO.getFirstName()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getLastName()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getAddress().getStreetAddress()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getAddress().getCountry()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getAddress().getPostalCode()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getUserType()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getAddress().getState()) ||
-        isEmptyOrNull(userSignUpRequestDTO.getAddress().getCity()) ||
-        userId == null || userId == 0) {
-            throw new IllegalArgumentException("All fields except contact number must be present and cannot be empty.");
+            isEmptyOrNull(userSignUpRequestDTO.getLastName()) ||
+            isEmptyOrNull(userSignUpRequestDTO.getAddress().getStreetAddress()) ||
+            isEmptyOrNull(userSignUpRequestDTO.getAddress().getCountry()) ||
+            isEmptyOrNull(userSignUpRequestDTO.getAddress().getPostalCode()) ||
+            isEmptyOrNull(userSignUpRequestDTO.getUserType()) ||
+            isEmptyOrNull(userSignUpRequestDTO.getAddress().getState()) ||
+            isEmptyOrNull(userSignUpRequestDTO.getAddress().getCity()) ||
+            userId == null || userId == 0) {
+                throw new IllegalArgumentException("All fields except contact number must be present and cannot be empty.");
         }
 
         User user =  getUserById(userId);

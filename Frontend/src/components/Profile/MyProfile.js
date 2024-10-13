@@ -58,7 +58,7 @@ const MyProfile = () => {
         value={field.value}
         onChange={(e) => handleChange(e.target.name, e.target.value)}
       />
-      {errors[field.name] && <span className={`error-message-profile ${errors ? 'show' : ''}`}>{errors[field.name]}</span>}
+      {errors[field.name] && <span className={`error-message ${errors ? 'show' : ''}`}>{errors[field.name]}</span>}
     </div>
   );
 

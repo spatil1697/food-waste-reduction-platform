@@ -118,6 +118,24 @@ img{
     padding: 6rem 0;
 }
 
+.error-message {
+    font-size: 11px;
+    max-height: 0.5px;
+    padding: 0.5px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease-in-out;
+}
+
+.error-message {
+    color: red;
+}
+
+.error-message.show {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* Media Queries(Medium Devices)*/
 @media screen and(max-width: 1024px){  
 .container{

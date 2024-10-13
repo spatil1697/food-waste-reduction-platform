@@ -3,7 +3,8 @@ import { useProfile } from '../../context/ProfileContext';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { MdAssignmentAdd } from 'react-icons/md';
-import './my-food-donations.css'
+import './myFoodDonations.css'
+import {Link} from 'react-router-dom';
 
 
 const MyFoodDonations = () => {
@@ -14,7 +15,7 @@ const MyFoodDonations = () => {
       <div className="donation-button">
         <div>
             <MdAssignmentAdd color="var(--color-bg-variant)" size="19px" /> 
-            <span className="donation-text">Advertise new Donation</span>
+            <Link to="/advertise" className="donation-text">Advertise new Donation</Link>
         </div>
     </div>
       </div>

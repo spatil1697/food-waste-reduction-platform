@@ -18,5 +18,7 @@ public class FoodRequestDTO {
     private Date expiryDate;
     private String pickupLocation;
     private String listingStatus;
+    private String email;
+    private String contactNumber;
 
 }

@@ -66,7 +66,7 @@ const DeleteAccount = () => {
           }}
         />
     </div>
-      <div className={`error-message-profile ${error ? 'show' : ''}`}>{error}</div>
+      <div className={`error-message ${error ? 'show' : ''}`}>{error}</div>
         <div className={`success-message-profile ${success ? 'show' : ''}`}>{success}</div>
     </div>
     <div className='submit-profile-container'>

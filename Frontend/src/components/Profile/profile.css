@@ -57,24 +57,6 @@
     height: 40px;
 }
 
-.error-message-profile {
-    font-size: 11px;
-    max-height: 0.5px;
-    padding: 0.5px;
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s, opacity 0.3s ease-in-out;
-}
-
-.error-message-profile{
-    color: red;
-}
-
-.error-message-profile.show {
-    visibility: visible;
-    opacity: 1;
-}
-
 .submit-profile-container {
     display: flex;
     justify-content: flex-end;

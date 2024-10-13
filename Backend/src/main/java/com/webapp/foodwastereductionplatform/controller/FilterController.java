@@ -3,7 +3,6 @@ package com.webapp.foodwastereductionplatform.controller;
 import com.webapp.foodwastereductionplatform.dto.*;
 import com.webapp.foodwastereductionplatform.service.*;
 import io.swagger.v3.oas.annotations.tags.*;
-import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;

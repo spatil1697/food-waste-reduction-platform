@@ -20,3 +20,7 @@ Nearly 8% of food waste contributes to the greenhouse effect. This application a
 * JUnit Testing
 * Mockito
 * Spring Security
+
+## 🖼️ Screenshots 
+
+![Home_page](https://github.com/user-attachments/assets/a77f512d-92f6-4493-8f5f-274d0b438acc)

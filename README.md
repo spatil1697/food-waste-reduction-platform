@@ -1,4 +1,4 @@
 # Food waste reduction platform
 
 ## Overview
-The Food Waste Reduction Platform. Currently actively working on developing this platform.
+Nearly 8% of food waste contributes to the greenhouse effect. This application aims to create a platform for donating surplus food from retailers, consumers and supermarkets.
